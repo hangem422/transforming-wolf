@@ -1,0 +1,27 @@
+{
+  "name": "transforming-wolf",
+  "description": "Transforming wolf animation with HTML canvas",
+  "version": "1.0.0",
+  "main": "index.html",
+  "scripts": {
+    "start": "./node_modules/serve/bin/serve.js"
+  },
+  "author": {
+    "name": "Hant",
+    "email": "hangem422@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hangem422/transforming-wolf"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^12.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0"
+  }
+}
