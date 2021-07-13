@@ -1,4 +1,8 @@
 import Component from '../../module/component.js';
+import Position from '../../module/position.js';
+import { hasSomeProp, INVISIBLE_POS } from '../../module/helper.js';
+
+import Wolf from './actors/wolf/index.js';
 
 /**
  * @typedef {object} StageProp
@@ -10,9 +14,12 @@ class Stage extends Component {
   #canvas = document.createElement('canvas');
   #ctx = this.#canvas.getContext('2d');
 
+  #wolf;
+
   state = {
-    stageWidth: this.#container.clientWidth,
-    stageHeight: this.#container.clientHeight,
+    stageWidth: 0,
+    stageHeight: 0,
+    wolfPos: new Position(INVISIBLE_POS, INVISIBLE_POS),
   };
 
   /** @type {StageProp} */
@@ -27,7 +34,9 @@ class Stage extends Component {
 
     this.#container.className = 'stage';
     this.#container.appendChild(this.#canvas);
-    this.#container.addEventListener('resize', this.#resize.bind(this));
+    window.addEventListener('resize', this.#resize.bind(this));
+
+    this.#wolf = new Wolf();
 
     this.#animate();
   }
@@ -37,25 +46,34 @@ class Stage extends Component {
 
     const stageWidth = this.#container.clientWidth;
     const stageHeight = this.#container.clientHeight;
+    const wolfPos = new Position(stageWidth / 2, stageHeight / 2);
 
     this.#canvas.width = stageWidth * pixelRatio;
     this.#canvas.height = stageHeight * pixelRatio;
     this.#ctx.scale(pixelRatio, pixelRatio);
 
-    this.setState({ stageWidth, stageHeight });
+    this.setState({ stageWidth, stageHeight, wolfPos });
   }
 
-  #animate() {}
+  #animate() {
+    window.requestAnimationFrame(this.#animate.bind(this));
+
+    const { stageWidth, stageHeight } = this.state;
+    this.#ctx.clearRect(0, 0, stageWidth, stageHeight);
+
+    this.#wolf.draw(this.#ctx);
+  }
 
   render() {
-    console.log(this.state);
+    const { wolfPos } = this.state;
+
+    this.#wolf.setProp({ center: wolfPos, width: 400 });
   }
 
   componentDidRender(_, preProp) {
-    const pixelRatioChange = this.prop.pixelRatio !== preProp.pixelRatio;
+    const resize = hasSomeProp(preProp, 'pixelRatio');
 
-    // Stage 해상도 비율이 변경되면, Stage를 리사이즈 합니다.
-    if (pixelRatioChange) this.#resize();
+    if (resize) this.#resize(); // Stage 해상도 비율이 변경되면, Stage를 리사이즈 합니다.
   }
 }
 
