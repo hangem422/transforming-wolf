@@ -5,23 +5,23 @@ import FPI from '../../../module/foldable-part-image.js';
 import AI from '../../../module/animation-info.js';
 import PC from '../../../module/progress-curve.js';
 
-import { WOLF_IMG } from '../../../statics/conf/image-conf.js';
-import ANI, { WOLF_ANI } from '../../../statics/conf/animation-conf.js';
+import { BONE_IMG } from '../../../statics/conf/image-conf.js';
+import ANI, { BONE_ANI } from '../../../statics/conf/animation-conf.js';
 import Part from './part.js';
 
 /**
- * @typedef {object} WolfProp
+ * @typedef {object} BoneProp
  * @property {Position} center 개체 중앙 좌표
  * @property {number} width 개체 가로 크기
  * @property {boolean} show 등장 여부
  */
 
-class Wolf extends Component {
+class Bone extends Component {
   #img = new Image(); // Split Image Element
   #pc = new PC(ANI.animationTime, ANI.timeCurve); // 등장 애니메이션 진행도 커브 그래프 (progress curve)
-  #ai = new AI(WOLF_ANI); // 개체 애니메이션 정보 (animation information)
+  #ai = new AI(BONE_ANI); // 개체 애니메이션 정보 (animation information)
   #pdt = 0; // 최근 Draw된 시간 (previous drawing time)
-  #ast = -Infinity; // 최근 애니메이션 시작 시간 (animation start time)
+  #ast = Infinity; // 최근 애니메이션 시작 시간 (animation start time)
   #parts = []; // 부속품 개체 배열
 
   state = {
@@ -30,23 +30,21 @@ class Wolf extends Component {
     ratio: 1, // 크기 비율
   };
 
-  /** @type {WolfProp} */
+  /** @type {BoneProp} */
   prop = {};
 
   constructor() {
     super();
 
     this.#img.onload = () => this.setState({ imgLoad: true });
-    this.#img.src = '/src/statics/image/wolf-parts.png';
+    this.#img.src = '/src/statics/image/bone-parts.png';
 
     this.#parts = [
-      new Part('legLB', new FPI(WOLF_IMG.legLB), new AI(WOLF_ANI.legRB)),
-      new Part('legLF', new FPI(WOLF_IMG.legLF), new AI(WOLF_ANI.legLF)),
-      new Part('tail', new FPI(WOLF_IMG.tail), new AI(WOLF_ANI.tail)),
-      new Part('head', new FPI(WOLF_IMG.head), new AI(WOLF_ANI.head)),
-      new Part('body', new FPI(WOLF_IMG.body), new AI(WOLF_ANI.body)),
-      new Part('legRF', new FPI(WOLF_IMG.legRF), new AI(WOLF_ANI.legRF)),
-      new Part('legRB', new FPI(WOLF_IMG.legRB), new AI(WOLF_ANI.legRB)),
+      new Part('decoLT', new FPI(BONE_IMG.decoLT), new AI(BONE_ANI.decoLT)),
+      new Part('decoLB', new FPI(BONE_IMG.decoLB), new AI(BONE_ANI.decoLB)),
+      new Part('decoRT', new FPI(BONE_IMG.decoRT), new AI(BONE_ANI.decoRT)),
+      new Part('decoRB', new FPI(BONE_IMG.decoRB), new AI(BONE_ANI.decoRB)),
+      new Part('stick', new FPI(BONE_IMG.stick), new AI(BONE_ANI.stick)),
     ];
   }
 
@@ -55,8 +53,8 @@ class Wolf extends Component {
    */
   #reflow() {
     const { width } = this.prop;
-    const ratio = width / WOLF_IMG.width;
-    const height = WOLF_IMG.height * ratio;
+    const ratio = width / BONE_IMG.width;
+    const height = BONE_IMG.height * ratio;
     const padding = new Position(-width / 2, -height / 2);
 
     this.setState({ padding, ratio });
@@ -101,4 +99,4 @@ class Wolf extends Component {
   }
 }
 
-export default Wolf;
+export default Bone;

@@ -12,6 +12,7 @@ class App extends Component {
   state = {
     pixelRatio: window.devicePixelRatio > 1 ? 2 : 1, // 화면 해상도 비율
     showWolf: false, // 늑대 등장 여부
+    showBone: true, // 뼈다귀 등장 여부
   };
 
   get $element() {
@@ -32,8 +33,8 @@ class App extends Component {
    */
   #setAutoAction() {
     this.#autoAction = setInterval(() => {
-      const { showWolf } = this.state;
-      this.setState({ showWolf: !showWolf });
+      const { showWolf, showBone } = this.state;
+      this.setState({ showWolf: !showWolf, showBone: !showBone });
     }, ANI.animationInterval);
   }
 
@@ -52,8 +53,8 @@ class App extends Component {
   }
 
   render() {
-    const { pixelRatio, showWolf } = this.state;
-    this.#stage.setProp({ pixelRatio, showWolf });
+    const { pixelRatio, showWolf, showBone } = this.state;
+    this.#stage.setProp({ pixelRatio, showWolf, showBone });
   }
 }
 

@@ -2,12 +2,15 @@ import Component, { hasSomeProp } from '../../module/component.js';
 import Position from '../../module/position.js';
 import { INVISIBLE_POS } from '../../module/helper.js';
 
+import { WOLF_IMG, BONE_IMG } from '../../statics/conf/image-conf.js';
 import Wolf from './actors/wolf.js';
+import Bone from './actors/bone.js';
 
 /**
  * @typedef {object} StageProp
  * @property {number} pixelRatio Stage 해상도 비율
  * @property {boolean} showWolf 늑대 등장 여부
+ * @property {boolean} showBone 뼈다귀 등장 여부
  */
 
 class Stage extends Component {
@@ -16,11 +19,13 @@ class Stage extends Component {
   #ctx = this.#canvas.getContext('2d'); // Context of main canvas
 
   #wolf; // 늑대 개체
+  #bone; // 뺘다귀 개체
 
   state = {
     stageWidth: 0, // Official Canvas Width
     stageHeight: 0, // Official Canvas Height
     wolfPos: new Position(INVISIBLE_POS, INVISIBLE_POS), // 늑대 위치 좌표
+    bonePos: new Position(INVISIBLE_POS, INVISIBLE_POS), // 뼈다귀 위치 좌표
   };
 
   /** @type {StageProp} */
@@ -37,6 +42,7 @@ class Stage extends Component {
     this.#container.appendChild(this.#canvas);
 
     this.#wolf = new Wolf();
+    this.#bone = new Bone();
   }
 
   /**
@@ -48,12 +54,13 @@ class Stage extends Component {
     const stageWidth = this.#container.clientWidth;
     const stageHeight = this.#container.clientHeight;
     const wolfPos = new Position(stageWidth / 2, stageHeight / 2);
+    const bonePos = wolfPos.clone();
 
     this.#canvas.width = stageWidth * pixelRatio;
     this.#canvas.height = stageHeight * pixelRatio;
     this.#ctx.scale(pixelRatio, pixelRatio);
 
-    this.setState({ stageWidth, stageHeight, wolfPos });
+    this.setState({ stageWidth, stageHeight, wolfPos, bonePos });
   }
 
   /**
@@ -67,6 +74,7 @@ class Stage extends Component {
     this.#ctx.clearRect(0, 0, stageWidth, stageHeight);
 
     this.#wolf.draw(this.#ctx, time);
+    this.#bone.draw(this.#ctx, time);
   }
 
   componentDidMount() {
@@ -82,10 +90,20 @@ class Stage extends Component {
   }
 
   render() {
-    const { wolfPos } = this.state;
-    const { showWolf } = this.prop;
+    const { wolfPos, bonePos } = this.state;
+    const { showWolf, showBone } = this.prop;
 
-    this.#wolf.setProp({ center: wolfPos, width: 400, show: showWolf });
+    this.#wolf.setProp({
+      center: wolfPos,
+      width: WOLF_IMG.width,
+      show: showWolf,
+    });
+
+    this.#bone.setProp({
+      center: bonePos,
+      width: BONE_IMG.width,
+      show: showBone,
+    });
   }
 }
 
