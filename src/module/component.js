@@ -10,7 +10,6 @@ class Component {
   constructor() {
     Promise.resolve().then(() => {
       if (this.#init) return;
-      this.#init = true;
       this.preRender();
     });
   }
@@ -85,9 +84,15 @@ class Component {
    * @param {Map<string, any>} preProp 이전 프러퍼티
    */
   preRender(preState, preProp) {
-    if (this.#init === false) this.#init = true;
-    Promise.resolve().then(() => this.componentDidRender(preState, preProp));
+    let afterRenderFunc = () => this.componentDidUpdate(preState, preProp);
 
+    // 치기화가 진행되지 않은 상태면 render 후 componentDidMount를 실행합니다.
+    if (this.#init === false) {
+      afterRenderFunc = () => this.componentDidMount();
+      this.#init = true;
+    }
+
+    Promise.resolve().then(afterRenderFunc);
     this.render();
   }
 
@@ -101,11 +106,26 @@ class Component {
   }
 
   /**
-   * @description Application의 전체 렌더가 종료되면 호출됩니다.
+   * @description Component가 처음 렌더된 후에 호출됩니다.
+   */
+  componentDidMount() {}
+
+  /**
+   * @description Component가 업데이트 된 후에 호출됩니다.
    * @param {Map<string, any>} preState 이전 상태값
    * @param {Map<string, any>} preProp 이전 프러퍼티
    */
-  componentDidRender(preState, preProp) {}
+  componentDidUpdate(preState, preProp) {}
 }
+
+/**
+ * @description Map 객체가 해당하는 프로퍼티를 하나라도 가지고 있는지 검증합니다.
+ * @param {Map<string, any>} map 검사할 Map 객체
+ * @param  {...string} props 검사할 프로퍼티 이름
+ * @returns {boolean}
+ */
+export const hasSomeProp = (map, ...props) => {
+  return props.some((prop) => map.has(prop));
+};
 
 export default Component;

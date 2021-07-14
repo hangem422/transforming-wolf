@@ -1,4 +1,4 @@
-const wolfInfo = {
+const wolfConf = {
   width: 435.4924,
   height: 420.326,
   imgWidth: 924.1493,
@@ -75,4 +75,4 @@ const wolfInfo = {
   },
 };
 
-export default wolfInfo;
+export default wolfConf;

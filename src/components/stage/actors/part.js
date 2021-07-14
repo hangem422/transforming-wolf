@@ -1,8 +1,7 @@
-import Component from '../../../../module/component.js';
-import Position from '../../../../module/position.js';
-import { hasSomeProp, INVISIBLE_POS } from '../../../../module/helper.js';
-
-import PartOption from './part-option.js';
+import Component, { hasSomeProp } from '../../../module/component.js';
+import Position from '../../../module/position.js';
+import { INVISIBLE_POS } from '../../../module/helper.js';
+import FoldablePartImage from '../../../module/foldablePartImage.js';
 
 /**
  * @typedef {object} PartProp
@@ -14,24 +13,27 @@ class Part extends Component {
   #opt;
 
   state = {
-    pos: new Position(INVISIBLE_POS, INVISIBLE_POS),
-    achor: new Position(INVISIBLE_POS, INVISIBLE_POS),
-    width: 0,
-    height: 0,
+    pos: new Position(INVISIBLE_POS, INVISIBLE_POS), // 개체 부품의 위치 좌표
+    achor: new Position(INVISIBLE_POS, INVISIBLE_POS), // 개체 부품의 앵커 좌표
+    width: 0, // 개체 부품의 가로 크기
+    height: 0, // 개체 부품의 세로 크기
   };
 
   /** @type {PartProp} */
   prop = {};
 
   /**
-   * @param {PartOption} opt 개체 설정
+   * @param {FoldablePartImage} opt 개체 설정
    */
   constructor(opt) {
     super();
     this.#opt = opt;
   }
 
-  #relocate() {
+  /**
+   * @description 개체 부품의 위치와 크기를 재설정합니다.
+   */
+  #reflow() {
     const { ratio } = this.prop;
 
     const pos = this.#opt.pos.rate(ratio);
@@ -43,10 +45,11 @@ class Part extends Component {
   }
 
   /**
-   * @description 개체를 화면에 그립니다.
+   * @description 개체 부품의 다음 장면을 화면에 그립니다.
    * @param {CanvasRenderingContext2D} ctx
+   * @param {number} progress
    */
-  draw(ctx) {
+  draw(ctx, progress) {
     const { pos, achor, width, height } = this.state;
     const { img } = this.prop;
 
@@ -70,11 +73,15 @@ class Part extends Component {
     ctx.restore();
   }
 
+  componentDidMount() {
+    this.#reflow();
+  }
+
   render() {}
 
   componentDidRender(_, preProp) {
-    const relocate = hasSomeProp(preProp, 'ratio');
-    if (relocate) this.#relocate();
+    const reflow = hasSomeProp(preProp, 'ratio');
+    if (reflow) this.#reflow();
   }
 }
 

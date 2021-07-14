@@ -1,6 +1,6 @@
-import Position from '../../../../module/position.js';
+import Position from './position.js';
 
-class PartOption {
+class FoldablePartImage {
   #width;
   #height;
   #pos;
@@ -36,4 +36,4 @@ class PartOption {
   }
 }
 
-export default PartOption;
+export default FoldablePartImage;
