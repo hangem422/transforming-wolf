@@ -1,4 +1,4 @@
-const wolfConf = {
+export const WOLF_IMG = {
   width: 435.4924,
   height: 420.326,
   imgWidth: 924.1493,
@@ -23,6 +23,16 @@ const wolfConf = {
     achorX: 0,
     achorY: 0,
   },
+  tail: {
+    width: 99.6383,
+    height: 192.9619,
+    posX: 0,
+    posY: 136.9653,
+    imgPosX: 595.521,
+    imgPosY: 10,
+    achorX: 99.6383,
+    achorY: 1.7463,
+  },
   legRF: {
     width: 50.3902,
     height: 187.8615,
@@ -42,16 +52,6 @@ const wolfConf = {
     imgPosY: 10,
     achorX: 0,
     achorY: 0,
-  },
-  tail: {
-    width: 99.6383,
-    height: 192.9619,
-    posX: 0,
-    posY: 136.9653,
-    imgPosX: 595.521,
-    imgPosY: 10,
-    achorX: 99.6383,
-    achorY: 1.7463,
   },
   legLF: {
     width: 91.0735,
@@ -74,5 +74,3 @@ const wolfConf = {
     achorY: 0,
   },
 };
-
-export default wolfConf;

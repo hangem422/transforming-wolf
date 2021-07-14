@@ -5,7 +5,7 @@ import Stage from './components/stage/index.js';
 
 class App extends Component {
   #container = document.createElement('div'); // Element Container
-  #autoAction = null; // 자동 에니메이션 Interval Handler
+  #autoAction = null; // 자동 애니메이션 Interval Handler
 
   #stage; // 2D Canvs Stage Component
 

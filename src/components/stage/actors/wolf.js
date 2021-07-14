@@ -1,11 +1,12 @@
 import Component, { hasSomeProp } from '../../../module/component.js';
 import Position from '../../../module/position.js';
 import { INVISIBLE_POS } from '../../../module/helper.js';
-import FoldablePartImage from '../../../module/foldablePartImage.js';
-import ProgressCurve from '../../../module/progressCurve.js';
+import FPI from '../../../module/foldable-part-image.js';
+import AI from '../../../module/animation-info.js';
+import PC from '../../../module/progress-curve.js';
 
-import WOLF from '../../../statics/conf/wolf-conf.js';
-import ANI from '../../../statics/conf/animation-conf.js';
+import { WOLF_IMG } from '../../../statics/conf/image-conf.js';
+import ANI, { WOLF_ANI } from '../../../statics/conf/animation-conf.js';
 import Part from './part.js';
 
 /**
@@ -17,14 +18,15 @@ import Part from './part.js';
 
 class Wolf extends Component {
   #img = new Image(); // Split Image Element
-  #progressCurve = new ProgressCurve(ANI.animationTime); // 등장 에니메이션 진행도 커브 그래프
-  #preDrawingTime = 0; // 최근 Draw된 시간
-  #animationStartTime = -Infinity; // 최근 에니메이션 시작 시간
+  #pc = new PC(ANI.animationTime, ANI.timeCurve); // 등장 애니메이션 진행도 커브 그래프 (progress curve)
+  #ai = new AI(WOLF_ANI); // 개체 애니메이션 정보 (animation information)
+  #pdt = 0; // 최근 Draw된 시간 (previous drawing time)
+  #ast = -Infinity; // 최근 애니메이션 시작 시간 (animation start time)
   #parts = []; // 부속품 개체 배열
 
   state = {
     imgLoad: false, // 이미지 로드 여부
-    pos: new Position(INVISIBLE_POS, INVISIBLE_POS), // 늑대 개체 좌상단 좌표 값
+    padding: new Position(INVISIBLE_POS, INVISIBLE_POS), // 늑대 개체 좌상단 좌표와 중앙 좌표의 거리
     ratio: 1, // 크기 비율
   };
 
@@ -38,13 +40,13 @@ class Wolf extends Component {
     this.#img.src = '/src/statics/image/wolf-parts.png';
 
     this.#parts = [
-      new Part(new FoldablePartImage(WOLF.legLB)),
-      new Part(new FoldablePartImage(WOLF.legLF)),
-      new Part(new FoldablePartImage(WOLF.tail)),
-      new Part(new FoldablePartImage(WOLF.head)),
-      new Part(new FoldablePartImage(WOLF.body)),
-      new Part(new FoldablePartImage(WOLF.legRF)),
-      new Part(new FoldablePartImage(WOLF.legRB)),
+      new Part('wolf-legLB', new FPI(WOLF_IMG.legLB), new AI(WOLF_ANI.legRB)),
+      new Part('wolf-legLF', new FPI(WOLF_IMG.legLF), new AI(WOLF_ANI.legLF)),
+      new Part('wolf-tail', new FPI(WOLF_IMG.tail), new AI(WOLF_ANI.tail)),
+      new Part('wolf-head', new FPI(WOLF_IMG.head), new AI(WOLF_ANI.head)),
+      new Part('wolf-body', new FPI(WOLF_IMG.body), new AI(WOLF_ANI.body)),
+      new Part('wolf-legRF', new FPI(WOLF_IMG.legRF), new AI(WOLF_ANI.legRF)),
+      new Part('wolf-legRB', new FPI(WOLF_IMG.legRB), new AI(WOLF_ANI.legRB)),
     ];
   }
 
@@ -52,12 +54,12 @@ class Wolf extends Component {
    * @description 늑대 개체의 위치와 크기를 재설정합니다.
    */
   #reflow() {
-    const { width, center } = this.prop;
-    const ratio = width / WOLF.width;
-    const height = WOLF.height * ratio;
-    const pos = center.move(-width / 2, -height / 2);
+    const { width } = this.prop;
+    const ratio = width / WOLF_IMG.width;
+    const height = WOLF_IMG.height * ratio;
+    const padding = new Position(-width / 2, -height / 2);
 
-    this.setState({ pos, ratio });
+    this.setState({ padding, ratio });
   }
 
   /**
@@ -66,20 +68,22 @@ class Wolf extends Component {
    * @param {number} time
    */
   draw(ctx, time) {
-    const { pos, imgLoad } = this.state;
-    const { show } = this.prop;
+    const { padding, imgLoad } = this.state;
+    const { center, show } = this.prop;
     if (imgLoad === false) return;
 
-    this.#preDrawingTime = time;
-    const progress = this.#progressCurve.getProgress(
-      this.#animationStartTime,
-      time,
-      !show,
-    );
+    this.#pdt = time;
+    const progress = this.#pc.getProgress(this.#ast, time, !show);
+    const rotation = this.#ai.getRotation(progress);
+    const scale = this.#ai.getScale(progress) / 100;
 
     ctx.save();
-    ctx.translate(pos.x, pos.y);
-    this.#parts.forEach((part) => part.draw(ctx));
+    ctx.translate(center.x, center.y);
+    ctx.rotate(rotation);
+    ctx.scale(scale, scale);
+
+    ctx.translate(padding.x, padding.y);
+    this.#parts.forEach((part) => part.draw(ctx, progress));
     ctx.restore();
   }
 
@@ -93,7 +97,7 @@ class Wolf extends Component {
     const visible = hasSomeProp(preProp, 'show');
 
     if (reflow) this.#reflow(); // 개체의 location과 관련된 값이 변하면, 재배치를 진행합니다.
-    if (visible) this.#animationStartTime = this.#preDrawingTime; // 개체의 등장 여부가 변하면 에니메이션을 시작합니다.
+    if (visible) this.#ast = this.#pdt; // 개체의 등장 여부가 변하면 애니메이션을 시작합니다.
   }
 }
 

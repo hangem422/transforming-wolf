@@ -10,6 +10,10 @@ class Position {
     return this.#y;
   }
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
   constructor(x, y) {
     if (typeof x === 'number') this.#x = x;
     if (typeof y === 'number') this.#y = y;

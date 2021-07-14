@@ -1,7 +1,8 @@
 import Component, { hasSomeProp } from '../../../module/component.js';
 import Position from '../../../module/position.js';
 import { INVISIBLE_POS } from '../../../module/helper.js';
-import FoldablePartImage from '../../../module/foldablePartImage.js';
+import FoldablePartImage from '../../../module/foldable-part-image.js';
+import AnimationInfo from '../../../module/animation-info.js';
 
 /**
  * @typedef {object} PartProp
@@ -10,7 +11,9 @@ import FoldablePartImage from '../../../module/foldablePartImage.js';
  */
 
 class Part extends Component {
+  #name;
   #opt;
+  #aniOpt;
 
   state = {
     pos: new Position(INVISIBLE_POS, INVISIBLE_POS), // 개체 부품의 위치 좌표
@@ -23,11 +26,15 @@ class Part extends Component {
   prop = {};
 
   /**
+   * @param {string} name 개체 이름
    * @param {FoldablePartImage} opt 개체 설정
+   * @param {AnimationInfo} aniOpt 개체 애니메이션 설정
    */
-  constructor(opt) {
+  constructor(name, opt, aniOpt) {
     super();
+    this.#name = name;
     this.#opt = opt;
+    this.#aniOpt = aniOpt;
   }
 
   /**
@@ -55,9 +62,11 @@ class Part extends Component {
 
     const ctxX = pos.x + achor.x;
     const ctxY = pos.y + achor.y;
+    const rotation = this.#aniOpt.getRotation(progress);
 
     ctx.save();
     ctx.translate(ctxX, ctxY);
+    ctx.rotate(rotation);
     ctx.drawImage(
       img,
       this.#opt.imgPos.x,
