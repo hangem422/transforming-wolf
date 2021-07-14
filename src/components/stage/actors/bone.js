@@ -21,7 +21,7 @@ class Bone extends Component {
   #pc = new PC(ANI.animationTime, ANI.timeCurve); // 등장 애니메이션 진행도 커브 그래프 (progress curve)
   #ai = new AI(BONE_ANI); // 개체 애니메이션 정보 (animation information)
   #pdt = 0; // 최근 Draw된 시간 (previous drawing time)
-  #ast = Infinity; // 최근 애니메이션 시작 시간 (animation start time)
+  #ast = -Infinity; // 최근 애니메이션 시작 시간 (animation start time)
   #parts = []; // 부속품 개체 배열
 
   state = {
@@ -74,6 +74,8 @@ class Bone extends Component {
     const progress = this.#pc.getProgress(this.#ast, time, !show);
     const rotation = this.#ai.getRotation(progress);
     const scale = this.#ai.getScale(progress) / 100;
+
+    // console.log(imgLoad, this.#ast, show, progress); // true Infinity true 0
 
     ctx.save();
     ctx.translate(center.x, center.y);
