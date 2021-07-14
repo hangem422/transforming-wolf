@@ -1,8 +1,7 @@
 import Component, { hasSomeProp } from '../../../module/component.js';
 import Position from '../../../module/position.js';
 import { INVISIBLE_POS } from '../../../module/helper.js';
-import FoldablePartImage from '../../../module/foldable-part-image.js';
-import AnimationInfo from '../../../module/animation-info.js';
+import FPO from '../../../module/foldable-part-option.js';
 
 /**
  * @typedef {object} PartProp
@@ -12,7 +11,7 @@ import AnimationInfo from '../../../module/animation-info.js';
 
 class Part extends Component {
   #name;
-  #opt;
+  #imgOpt;
   #aniOpt;
 
   state = {
@@ -26,15 +25,14 @@ class Part extends Component {
   prop = {};
 
   /**
-   * @param {string} name 개체 이름
-   * @param {FoldablePartImage} opt 개체 설정
-   * @param {AnimationInfo} aniOpt 개체 애니메이션 설정
+   * @param {FPO} opt foldable part option
    */
-  constructor(name, opt, aniOpt) {
+  constructor(opt) {
     super();
-    this.#name = name;
-    this.#opt = opt;
-    this.#aniOpt = aniOpt;
+
+    this.#name = opt.name;
+    this.#imgOpt = opt.img;
+    this.#aniOpt = opt.ani;
   }
 
   /**
@@ -43,10 +41,10 @@ class Part extends Component {
   #reflow() {
     const { ratio } = this.prop;
 
-    const pos = this.#opt.pos.rate(ratio);
-    const achor = this.#opt.achor.rate(ratio);
-    const width = this.#opt.width * ratio;
-    const height = this.#opt.height * ratio;
+    const pos = this.#imgOpt.pos.rate(ratio);
+    const achor = this.#imgOpt.achor.rate(ratio);
+    const width = this.#imgOpt.width * ratio;
+    const height = this.#imgOpt.height * ratio;
 
     this.setState({ pos, achor, width, height });
   }
@@ -69,10 +67,10 @@ class Part extends Component {
     ctx.rotate(rotation);
     ctx.drawImage(
       img,
-      this.#opt.imgPos.x,
-      this.#opt.imgPos.y,
-      this.#opt.width,
-      this.#opt.height,
+      this.#imgOpt.imgPos.x,
+      this.#imgOpt.imgPos.y,
+      this.#imgOpt.width,
+      this.#imgOpt.height,
       -achor.x,
       -achor.y,
       width,

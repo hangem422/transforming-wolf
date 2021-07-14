@@ -1,17 +1,17 @@
 /**
- * @typedef {object} AnimationInfoConstructorParam
+ * @typedef {object} FoldablePartAnimationConstructorParam
  * @property {{ from: number, to: number }} rotation 회전 애니메이션
  * @property {{ from: number, to: number }} scale 스케일 애니메이션
  */
 
-class AnimationInfo {
+class FoldablePartAnimation {
   #rotaionFrom;
   #rotaionTo;
   #scaleFrom;
   #scaleTo;
 
   /**
-   * @param {AnimationInfoConstructorParam} conf
+   * @param {FoldablePartAnimationConstructorParam} conf
    */
   constructor(conf) {
     this.#rotaionFrom = conf.rotation?.from ?? 0;
@@ -43,4 +43,4 @@ class AnimationInfo {
   }
 }
 
-export default AnimationInfo;
+export default FoldablePartAnimation;

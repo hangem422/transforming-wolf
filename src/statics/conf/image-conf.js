@@ -1,4 +1,5 @@
 export const WOLF_IMG = {
+  url: '/src/statics/image/wolf-parts.png',
   width: 435.4924,
   height: 420.326,
   imgWidth: 924.1493,
@@ -76,6 +77,7 @@ export const WOLF_IMG = {
 };
 
 export const BONE_IMG = {
+  url: '/src/statics/image/bone-parts.png',
   width: 230.2318,
   height: 66,
   imgWidth: 260.3615,

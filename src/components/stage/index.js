@@ -3,8 +3,7 @@ import Position from '../../module/position.js';
 import { INVISIBLE_POS } from '../../module/helper.js';
 
 import { WOLF_IMG, BONE_IMG } from '../../statics/conf/image-conf.js';
-import Wolf from './actors/wolf.js';
-import Bone from './actors/bone.js';
+import * as actors from './actors/index.js';
 
 /**
  * @typedef {object} StageProp
@@ -41,8 +40,8 @@ class Stage extends Component {
     this.#container.className = 'stage';
     this.#container.appendChild(this.#canvas);
 
-    this.#wolf = new Wolf();
-    this.#bone = new Bone();
+    this.#wolf = actors.createWolf();
+    this.#bone = actors.createBone();
   }
 
   /**
