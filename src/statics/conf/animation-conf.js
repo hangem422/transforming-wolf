@@ -1,5 +1,6 @@
 const APP = {
   animationTime: 700,
+  animationDelyRate: 50,
   animationInterval: 2000,
   timeCurve: 10,
 };

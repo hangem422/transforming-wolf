@@ -23,6 +23,7 @@ class Base extends Component {
 
   #orgWidth; // 완성 이미지 원본 가로 크기
   #orgHeight; // 완성 이미지 원본 크기 세로
+  #partAniDelay;
   #pc; // 등장 애니메이션 진행도 커브 그래프 (progress curve)
   #fpa; // 접이식 개체 애니메이션 정보 (fordable part animation)
 
@@ -42,14 +43,16 @@ class Base extends Component {
    * @param {PC} pc progress curve
    * @param {FPA} fpa fordable part animation
    * @param {FPO[]} partOpts fordable part options
+   * @param {number?} partAniDelay 개체 구성 부품 에니메이션 딜레이 비율
    */
-  constructor(imagUrl, orgWidth, orgHeight, pc, fpa, partOpts) {
+  constructor(imagUrl, orgWidth, orgHeight, pc, fpa, partOpts, partAniDelay) {
     super();
 
     this.#img.onload = () => this.setState({ imgLoad: true });
     this.#img.src = imagUrl;
     this.#orgWidth = orgWidth;
     this.#orgHeight = orgHeight;
+    this.#partAniDelay = partAniDelay ?? 0;
 
     this.#pc = pc;
     this.#fpa = fpa;
@@ -80,6 +83,7 @@ class Base extends Component {
 
     this.#pdt = time;
     const progress = this.#pc.getProgress(this.#ast, time, !show);
+    const childProcess = PC.delayProgress(progress, this.#partAniDelay);
     const rotation = this.#fpa.getRotation(progress);
     const scale = this.#fpa.getScale(progress) / 100;
 
@@ -89,7 +93,7 @@ class Base extends Component {
     ctx.scale(scale, scale);
 
     ctx.translate(padding.x, padding.y);
-    this.#parts.forEach((part) => part.draw(ctx, progress));
+    this.#parts.forEach((part) => part.draw(ctx, childProcess));
     ctx.restore();
   }
 

@@ -8,6 +8,7 @@ import Base from './base.js';
 
 export const createWolf = () => {
   const { width, height, url } = IMAGE.WOLF_IMG;
+  const partAniDelay = ANI_APP.animationDelyRate;
   const pc = new PC(ANI_APP.animationTime, ANI_APP.animationInterval);
   const fpa = new FPA(ANI.WOLF_ANI);
   const partOpts = [
@@ -20,11 +21,12 @@ export const createWolf = () => {
     new FPO('legRB', IMAGE.WOLF_IMG.legRB, ANI.WOLF_ANI.legRB),
   ];
 
-  return new Base(url, width, height, pc, fpa, partOpts);
+  return new Base(url, width, height, pc, fpa, partOpts, partAniDelay);
 };
 
 export const createBone = () => {
   const { width, height, url } = IMAGE.BONE_IMG;
+  const partAniDelay = ANI_APP.animationDelyRate;
   const pc = new PC(ANI_APP.animationTime, ANI_APP.animationInterval);
   const fpa = new FPA(ANI.BONE_ANI);
   const partOpts = [
@@ -35,5 +37,5 @@ export const createBone = () => {
     new FPO('stick', IMAGE.BONE_IMG.stick, ANI.BONE_ANI.stick),
   ];
 
-  return new Base(url, width, height, pc, fpa, partOpts);
+  return new Base(url, width, height, pc, fpa, partOpts, partAniDelay);
 };

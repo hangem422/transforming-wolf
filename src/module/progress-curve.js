@@ -12,6 +12,12 @@ class ProgressCurve {
   #midBack;
   #end;
 
+  static delayProgress(progress, rate) {
+    if (progress === 100 && rate === 100) return 0;
+    const delay = ((progress - rate) * 100) / (100 - rate);
+    return delay < 0 ? 0 : delay;
+  }
+
   /**
    * @param {number} time 애니메이션 전체 시간
    * @param {number} degree 곡선 강도
